@@ -27,10 +27,19 @@ _local_ocr = RapidOCR()
 
 GSTIN_REGEX = re.compile(r'\b[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}\b')
 
+MONTH_MAP = {
+    'jan': '01', 'feb': '02', 'mar': '03', 'apr': '04', 'may': '05', 'jun': '06',
+    'jul': '07', 'aug': '08', 'sep': '09', 'oct': '10', 'nov': '11', 'dec': '12',
+    'january': '01', 'february': '02', 'march': '03', 'april': '04', 'june': '06',
+    'july': '07', 'august': '08', 'september': '09', 'october': '10', 'november': '11', 'december': '12'
+}
+
 DATE_PATTERNS = [
     re.compile(r'\b(202[4-7])[-/.](0[1-9]|1[0-2])[-/.](0[1-9]|[12][0-9]|3[01])\b'),
     re.compile(r'\b(0[1-9]|[12][0-9]|3[01])[-/.](0[1-9]|1[0-2])[-/.](202[4-7])\b'),
     re.compile(r'\b(0[1-9]|[12][0-9]|3[01])[-/.](0[1-9]|1[0-2])[-/.](2[4-7])\b'),
+    re.compile(r'\b(0[1-9]|[12][0-9]|3[01])\s*[-/.]?\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-/.]?\s*(202[4-7]|2[4-7])\b', re.IGNORECASE),
+    re.compile(r'\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s*[-/.]?\s*(0[1-9]|[12][0-9]|3[01])[, ]\s*(202[4-7]|2[4-7])\b', re.IGNORECASE),
 ]
 
 WORDS_TO_NUM = {
@@ -51,25 +60,43 @@ def normalize_date_to_iso(date_str: str) -> Optional[str]:
     """Standardizes date strings to YYYY-MM-DD."""
     if not date_str or not isinstance(date_str, str):
         return None
-    date_str = date_str.strip().replace('/', '-').replace('.', '-')
+    cleaned = date_str.strip().replace('/', '-').replace('.', '-')
+
+    # Alphanumeric date: e.g. 14Jul 2026, 14-Jul-2026, 14 Jul 2026
+    m_alpha = re.search(r'([0-3]?[0-9])\s*[-/.]?\s*([A-Za-z]{3,9})\s*[-/.]?\s*(202[4-7]|2[4-7])', cleaned)
+    if m_alpha:
+        d, mo_s, y = m_alpha.groups()
+        mo_num = MONTH_MAP.get(mo_s.lower())
+        if mo_num:
+            yr = f"20{y}" if len(y) == 2 else y
+            return f"{yr}-{mo_num}-{int(d):02d}"
+
+    # Alphanumeric date: e.g. Jul 14, 2026
+    m_alpha2 = re.search(r'([A-Za-z]{3,9})\s*[-/.]?\s*([0-3]?[0-9])[, ]\s*(202[4-7]|2[4-7])', cleaned)
+    if m_alpha2:
+        mo_s, d, y = m_alpha2.groups()
+        mo_num = MONTH_MAP.get(mo_s.lower())
+        if mo_num:
+            yr = f"20{y}" if len(y) == 2 else y
+            return f"{yr}-{mo_num}-{int(d):02d}"
     
-    m = re.match(r'^(\d{2})-(\d{2})-(\d{4})$', date_str)
+    m = re.match(r'^(\d{2})-(\d{2})-(\d{4})$', cleaned)
     if m:
         d, mo, y = m.groups()
         return f"{y}-{mo}-{d}"
     
-    m = re.match(r'^(\d{4})-(\d{2})-(\d{2})$', date_str)
+    m = re.match(r'^(\d{4})-(\d{2})-(\d{2})$', cleaned)
     if m:
-        return date_str
+        return cleaned
 
-    m = re.match(r'^(\d{2})-(\d{2})-(\d{2})$', date_str)
+    m = re.match(r'^(\d{2})-(\d{2})-(\d{2})$', cleaned)
     if m:
         d, mo, y = m.groups()
         return f"20{y}-{mo}-{d}"
 
     for fmt in ('%d-%m-%Y', '%Y-%m-%d', '%d-%m-%y', '%d %b %Y', '%d %B %Y', '%d-%b-%Y'):
         try:
-            return datetime.strptime(date_str, fmt).strftime('%Y-%m-%d')
+            return datetime.strptime(date_str.strip(), fmt).strftime('%Y-%m-%d')
         except ValueError:
             pass
     return None
@@ -78,9 +105,16 @@ def normalize_date_to_iso(date_str: str) -> Optional[str]:
 def clean_vendor_text(text: str) -> str:
     """Cleans up raw OCR string into a clean title-cased vendor name."""
     t = re.sub(r'^[^A-Za-z0-9]+|[^A-Za-z0-9]+$', '', str(text).strip())
+    # Strip leading "For " or "For: " (e.g. For Hotel Shubham Residency -> Hotel Shubham Residency)
+    t = re.sub(r'^(?:for|for:)\s+', '', t, flags=re.I)
     # Separate run-on camelCase words (e.g. HotelRajdhaniDhaba -> Hotel Rajdhani Dhaba)
     t = re.sub(r'([a-z])([A-Z])', r'\1 \2', t)
-    return t.title()
+    # Separate run-on uppercase words (e.g. HOTELSHUBHAMRESIDENCY -> HOTEL SHUBHAM RESIDENCY)
+    for kw in ['HOTEL', 'RESIDENCY', 'DHABA', 'RESTAURANT', 'CAFE', 'PETROLEUM', 'SERVICES', 'LODGE']:
+        t = re.sub(rf'(?i)\b({kw})([A-Z])', r'\1 \2', t)
+        t = re.sub(rf'(?i)([A-Z])({kw})\b', r'\1 \2', t)
+    return t.strip().title()
+
 
 
 class ReceiptExtractor:

@@ -246,6 +246,16 @@ document.addEventListener("DOMContentLoaded", () => {
     runAuditForClaim(selectedFieldClaim, "section1");
   });
 
+  // --- Section 2 Instant Photo Extraction Elements ---
+  const photoExtractedCard = document.getElementById("photoExtractedCard");
+  const quickVendor = document.getElementById("quickVendor");
+  const quickDate = document.getElementById("quickDate");
+  const quickBillNo = document.getElementById("quickBillNo");
+  const quickGstin = document.getElementById("quickGstin");
+  const quickAmount = document.getElementById("quickAmount");
+  const autoFillBtn = document.getElementById("autoFillBtn");
+  let latestPhotoExtracted = null;
+
   // ==========================================
   // 3. Section 2: Photo Upload & Manual Form
   // ==========================================
@@ -274,7 +284,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function handlePhotoSelected(file) {
+  async function handlePhotoSelected(file) {
     const reader = new FileReader();
     reader.onload = (evt) => {
       previewImg.src = evt.target.result;
@@ -282,14 +292,95 @@ document.addEventListener("DOMContentLoaded", () => {
       dropzonePreview.classList.remove("hidden");
     };
     reader.readAsDataURL(file);
+
+    // Instant OCR scanning & live readout
+    if (photoExtractedCard) {
+      photoExtractedCard.classList.remove("hidden");
+      quickVendor.textContent = "Scanning OCR...";
+      quickDate.textContent = "Scanning OCR...";
+      quickBillNo.textContent = "Scanning...";
+      quickGstin.textContent = "Scanning...";
+      quickAmount.textContent = "Reading...";
+    }
+
+    const fd = new FormData();
+    fd.append("file", file);
+
+    try {
+      const res = await fetch("/api/extract-photo", {
+        method: "POST",
+        body: fd
+      });
+      if (res.ok) {
+        const data = await res.json();
+        latestPhotoExtracted = data;
+        quickVendor.textContent = data.vendor || "Not detected";
+        quickDate.textContent = data.receipt_date || "Not detected";
+        quickBillNo.textContent = data.receipt_number || "None";
+        quickGstin.textContent = data.gstin || "None";
+        quickAmount.textContent = data.total_amount !== null ? `₹${parseFloat(data.total_amount).toFixed(2)}` : "Unread";
+
+        // Auto-fill form fields if they are blank or untouched
+        if (!customVendor.value) customVendor.value = data.vendor || "";
+        if (!customAmount.value && data.total_amount !== null) customAmount.value = data.total_amount;
+        if (!customDate.value && data.receipt_date) customDate.value = data.receipt_date;
+
+        // Auto-infer category if obvious
+        const vLower = (data.vendor || "").toLowerCase();
+        if (vLower.includes("hotel") || vLower.includes("lodge") || vLower.includes("residency") || vLower.includes("comforts")) {
+          customCategory.value = "Lodging";
+        } else if (vLower.includes("fuel") || vLower.includes("petrol") || vLower.includes("hpcl") || vLower.includes("bpcl") || vLower.includes("iocl") || vLower.includes("auto fuels")) {
+          customCategory.value = "Fuel";
+        } else if (vLower.includes("restaurant") || vLower.includes("dhaba") || vLower.includes("cafe") || vLower.includes("bhojnalaya") || vLower.includes("kitchen")) {
+          customCategory.value = "Food";
+        } else if (vLower.includes("courier") || vLower.includes("parcel")) {
+          customCategory.value = "Courier";
+        }
+
+        // Show image in the results viewer
+        if (data.image_url) {
+          resultReceiptImg.src = data.image_url;
+          receiptViewerWrapper.classList.remove("hidden");
+        }
+      }
+    } catch (err) {
+      console.error("Instant photo extraction error:", err);
+      quickVendor.textContent = "Error scanning photo";
+    }
+  }
+
+  if (autoFillBtn) {
+    autoFillBtn.addEventListener("click", () => {
+      if (!latestPhotoExtracted) return;
+      customVendor.value = latestPhotoExtracted.vendor || "";
+      if (latestPhotoExtracted.total_amount !== null) {
+        customAmount.value = latestPhotoExtracted.total_amount;
+      }
+      if (latestPhotoExtracted.receipt_date) {
+        customDate.value = latestPhotoExtracted.receipt_date;
+      }
+      const vLower = (latestPhotoExtracted.vendor || "").toLowerCase();
+      if (vLower.includes("hotel") || vLower.includes("lodge") || vLower.includes("residency")) {
+        customCategory.value = "Lodging";
+      } else if (vLower.includes("fuel") || vLower.includes("petrol")) {
+        customCategory.value = "Fuel";
+      } else if (vLower.includes("restaurant") || vLower.includes("dhaba") || vLower.includes("cafe")) {
+        customCategory.value = "Food";
+      }
+    });
   }
 
   removeImgBtn.addEventListener("click", (e) => {
     e.stopPropagation();
     fileInput.value = "";
     previewImg.src = "";
+    latestPhotoExtracted = null;
+    if (photoExtractedCard) photoExtractedCard.classList.add("hidden");
     dropzonePreview.classList.add("hidden");
     dropzonePrompt.classList.remove("hidden");
+    customVendor.value = "";
+    customAmount.value = "";
+    customDate.value = "";
   });
 
   // Section 2 Form Submit (Manual Audit)
@@ -300,9 +391,9 @@ document.addEventListener("DOMContentLoaded", () => {
       emp_id: customEmpId.value,
       employee_name: employeesMap[customEmpId.value]?.name || customEmpId.value,
       category: customCategory.value,
-      amount_claimed: customAmount.value.trim(),
-      expense_date: customDate.value.trim(),
-      vendor: customVendor.value.trim(),
+      amount_claimed: customAmount.value.trim() || (latestPhotoExtracted?.total_amount !== null ? String(latestPhotoExtracted.total_amount) : ""),
+      expense_date: customDate.value.trim() || (latestPhotoExtracted?.receipt_date || ""),
+      vendor: customVendor.value.trim() || (latestPhotoExtracted?.vendor || ""),
       rep_comment: customComment.value.trim(),
       has_upload: fileInput.files.length > 0
     };

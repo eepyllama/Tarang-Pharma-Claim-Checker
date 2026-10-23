@@ -169,6 +169,14 @@
             </div>
           </div>
 
+          <!-- Workflow Context Explainer -->
+          <div class="workflow-explainer">
+            <span class="explainer-icon">💡</span>
+            <div>
+              <strong>How this works:</strong> Reps photograph receipts and enter what they are claiming. The tool scans the photo, extracts the 5 fields, and audits if it matches and is under the ₹2,000 auto-approval limit.
+            </div>
+          </div>
+
           <!-- Dedicated Dropzone / File Picker -->
           <div class="dropzone" id="dropzone">
             <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" class="file-input">
@@ -187,8 +195,25 @@
             </div>
           </div>
 
-          <!-- Separate Manual Claim Metadata Form -->
+          <!-- Instant Live Photo Extraction Readout Card -->
+          <div class="photo-extracted-card hidden" id="photoExtractedCard">
+            <div class="extracted-card-header">
+              <span class="section-tag tag-green">✓ Extracted from Photo</span>
+              <button type="button" class="btn-text-action" id="autoFillBtn">⚡ Auto-Fill Claim Form</button>
+            </div>
+            <div class="extracted-grid">
+              <div><span class="meta-label">Vendor Detected:</span> <strong id="quickVendor">-</strong></div>
+              <div><span class="meta-label">Receipt Date:</span> <strong id="quickDate">-</strong></div>
+              <div><span class="meta-label">Bill / Inv #:</span> <strong id="quickBillNo">-</strong></div>
+              <div><span class="meta-label">GSTIN:</span> <strong id="quickGstin">-</strong></div>
+              <div><span class="meta-label">Receipt Amount:</span> <strong class="text-green" id="quickAmount">-</strong></div>
+            </div>
+          </div>
+
+          <!-- Representative's Claim Simulation Form -->
           <form id="uploadClaimForm" class="claim-form">
+            <div class="form-section-title">Field Representative Claim Data:</div>
+
             <div class="form-row">
               <div class="form-group col-half">
                 <label for="customClaimId">Claim ID</label>
@@ -204,7 +229,7 @@
 
             <div class="form-row">
               <div class="form-group col-half">
-                <label for="customCategory">Category</label>
+                <label for="customCategory">Expense Category</label>
                 <select id="customCategory" class="form-control" required>
                   <option value="Fuel">Fuel (Two-Wheeler / Car)</option>
                   <option value="Food">Food (Meals with Doctors)</option>
@@ -216,24 +241,24 @@
               </div>
               <div class="form-group col-half">
                 <label for="customAmount">Claimed Amount (₹)</label>
-                <input type="text" id="customAmount" class="form-control" placeholder="e.g. 450.00" value="450.00" required>
+                <input type="text" id="customAmount" class="form-control" placeholder="Leave blank to use receipt amount">
               </div>
             </div>
 
             <div class="form-row">
               <div class="form-group col-half">
                 <label for="customDate">Expense Date</label>
-                <input type="text" id="customDate" class="form-control" placeholder="YYYY-MM-DD" value="2026-07-20" required>
+                <input type="text" id="customDate" class="form-control" placeholder="YYYY-MM-DD (or blank to auto-use)">
               </div>
               <div class="form-group col-half">
                 <label for="customVendor">Vendor (As Typed by Rep)</label>
-                <input type="text" id="customVendor" class="form-control" placeholder="e.g. Green Leaf Restaurant" value="Green Leaf Restaurant">
+                <input type="text" id="customVendor" class="form-control" placeholder="Leave blank to use receipt vendor">
               </div>
             </div>
 
             <div class="form-group">
               <label for="customComment">Rep Comment</label>
-              <input type="text" id="customComment" class="form-control" placeholder="Optional comments" value="Lunch with doctor">
+              <input type="text" id="customComment" class="form-control" placeholder="e.g. Field visit expense" value="">
             </div>
 
             <button type="submit" class="btn btn-secondary" id="auditUploadedPhotoBtn">
@@ -242,7 +267,7 @@
                 <polyline points="17 8 12 3 7 8"></polyline>
                 <line x1="12" y1="3" x2="12" y2="15"></line>
               </svg>
-              <span>Extract Details & Audit Uploaded Photo</span>
+              <span>Run Receipt Audit & Policy Check</span>
             </button>
           </form>
         </section>

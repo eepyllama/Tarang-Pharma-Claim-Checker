@@ -126,16 +126,42 @@ async def get_sample_claims():
     return ALL_CLAIMS_CACHE
 
 
+@app.post("/api/extract-photo")
+async def extract_photo(file: UploadFile = File(...)):
+    """
+    Dedicated endpoint to extract 5 key accounting fields directly from an uploaded receipt photo.
+    Returns vendor, receipt_date, receipt_number, gstin, total_amount, confidence, and detected lines.
+    """
+    safe_name = f"upload_{file.filename}"
+    dest = settings.IMAGES_DIR / safe_name
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    with open(dest, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    extracted = pipeline.extractor.extract_fields(dest, {})
+    return {
+        "filename": file.filename,
+        "image_url": f"/images/{dest.name}",
+        "vendor": extracted.get("vendor", ""),
+        "receipt_date": extracted.get("receipt_date", ""),
+        "receipt_number": extracted.get("receipt_number", ""),
+        "gstin": extracted.get("gstin", ""),
+        "total_amount": extracted.get("total_amount"),
+        "confidence": round(extracted.get("ocr_confidence", 0.85) * 100, 1),
+        "ocr_lines": [l[0] for l in extracted.get("ocr_lines", [])[:15]]
+    }
+
+
 @app.post("/api/check-claim")
 async def check_claim(
     file: Optional[UploadFile] = File(None),
     claim_id: str = Form("CLM-MANUAL"),
     emp_id: str = Form("TPD-0412"),
     category: str = Form("Fuel"),
-    amount_claimed: str = Form("300.00"),
-    expense_date: str = Form("2026-06-11"),
-    vendor: str = Form("Laxmi Auto Fuels"),
-    rep_comment: str = Form("Petrol two wheeler"),
+    amount_claimed: str = Form(""),
+    expense_date: str = Form(""),
+    vendor: str = Form(""),
+    rep_comment: str = Form(""),
     existing_image: Optional[str] = Form(None),
     engine: str = Form("local")
 ):
@@ -162,18 +188,29 @@ async def check_claim(
     elif existing_image:
         image_path = settings.resolve_image_path(existing_image)
 
+    # If the user left fields blank to auto-extract directly from receipt photo:
+    if image_path and (not amount_claimed or amount_claimed.strip() in ["", "0", "0.0", "0.00"]):
+        extracted_probe = pipeline.extractor.extract_fields(image_path, {})
+        if extracted_probe.get('total_amount') is not None:
+            amount_claimed = str(extracted_probe['total_amount'])
+        if not vendor and extracted_probe.get('vendor'):
+            vendor = extracted_probe['vendor']
+        if not expense_date and extracted_probe.get('receipt_date'):
+            expense_date = extracted_probe['receipt_date']
+
     claim_dict = {
-        'claim_id': claim_id,
-        'emp_id': emp_id,
-        'category': category,
-        'amount_claimed': amount_claimed,
-        'expense_date': expense_date,
-        'vendor': vendor,
-        'rep_comment': rep_comment,
+        'claim_id': claim_id or "CLM-MANUAL",
+        'emp_id': emp_id or "TPD-0412",
+        'category': category or "Fuel",
+        'amount_claimed': amount_claimed or "0.00",
+        'expense_date': expense_date or "2026-07-20",
+        'vendor': vendor or "",
+        'rep_comment': rep_comment or "",
         'image_file': existing_image or (file.filename if file else "")
     }
 
     result = pipeline.process_claim(claim_dict, image_path=image_path)
+
 
     image_url = None
     if image_path:
