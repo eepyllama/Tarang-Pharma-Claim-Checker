@@ -284,7 +284,8 @@ def main():
     parser.add_argument("--url", default=DEFAULT_URL, help="ATSLite tracking URL or JWT token")
     parser.add_argument("--api", action="store_true", help="Run high-speed API downloader directly")
     parser.add_argument("--screen", action="store_true", help="Run PyAutoGUI screen control clicker")
-    parser.add_argument("--output-dir", default=str(Path(__file__).parent / "images"), help="Folder to save images")
+    parser.add_argument("--output-dir", default=str(Path(__file__).parent / "data" / "images"), help="Folder to save images")
+
     parser.add_argument("--downloads", action="store_true", default=True, help="Also save to user Downloads folder")
     parser.add_argument("--workers", type=int, default=10, help="Number of concurrent download threads")
 
