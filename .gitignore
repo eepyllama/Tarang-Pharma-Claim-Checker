@@ -1,12 +1,26 @@
+# Python & Virtual Environments
 __pycache__/
 *.py[cod]
 *$py.class
-.ocr_cache/
-.env
-.venv
+.venv/
 env/
 venv/
 *.log
-data/images/temp_*
-data/images/upload_*
 
+# Sensitive Client Data (Protected & Excluded from Public Repo)
+data/images/
+data/raw/*claims*.csv
+data/raw/*employees*.csv
+data/raw/*email-thread*
+data/raw/*.pdf
+data/raw/*.txt
+!data/raw/sample_submission.csv
+!data/raw/README.md
+
+# Helper download scripts with candidate tokens
+download_images.py
+
+# Local OCR Cache & Environment Secrets
+.ocr_cache/
+.env
+*.env

@@ -30,7 +30,18 @@ def load_employee_directory() -> Dict[str, Dict[str, Any]]:
                 }
         except Exception as e:
             print(f"Error loading employee directory from {csv_path}: {e}")
+            
+    # Clean fallback demo directory when proprietary employees.csv is excluded for public repos
+    if not directory:
+        directory = {
+            'TPD-0412': {'name': 'Rohan Wankhede', 'designation': 'Medical Representative', 'vehicle_no': 'MH31EK4471', 'vehicle_no_raw': 'MH31 EK 4471', 'grade': 'M1', 'headquarter': 'Nagpur'},
+            'TPD-0431': {'name': 'Pooja Meshram', 'designation': 'Senior Medical Representative', 'vehicle_no': 'MH31DX0981', 'vehicle_no_raw': 'MH31 DX 0981', 'grade': 'M2', 'headquarter': 'Nagpur'},
+            'TPD-0452': {'name': 'Kalyani Deshmukh', 'designation': 'Senior Medical Representative', 'vehicle_no': 'MH32BB1205', 'vehicle_no_raw': 'MH32 BB 1205', 'grade': 'M2', 'headquarter': 'Wardha'},
+            'TPD-0484': {'name': 'Tushar Barde', 'designation': 'Medical Representative', 'vehicle_no': 'MH29AR4419', 'vehicle_no_raw': 'MH29 AR 4419', 'grade': 'M1', 'headquarter': 'Yavatmal'},
+            'TPD-0388': {'name': 'Nilesh Agrawal', 'designation': 'Finance Controller', 'vehicle_no': '', 'vehicle_no_raw': '', 'grade': 'M3', 'headquarter': 'Nagpur'}
+        }
     return directory
+
 
 
 def normalize_amount(val: Any) -> Optional[float]:
