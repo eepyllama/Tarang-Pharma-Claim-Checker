@@ -2,7 +2,40 @@
 
 An automated receipt reading, information extraction, and policy compliance audit system built for **Tarang Pharma Distribution** (Nagpur Division).
 
-This system reads receipt photographs uploaded by field medical representatives, extracts the 5 core accounting fields (Vendor, Bill Date, Bill Number, GSTIN, Total Amount), and deterministically executes **Tarang Field Expense Policy (v3.2)** to automatically approve compliant small bills (< ₹2,000) while routing high-value claims (≥ ₹2,000) and policy exceptions to finance clerks.
+The system processes mobile receipt photographs uploaded by field medical representatives, extracts the 5 core accounting fields (Vendor, Bill Date, Bill Number, GSTIN, Total Amount), and deterministically executes **Tarang Field Expense Policy (v3.2)** to automatically approve compliant small bills (< ₹2,000) while routing high-value claims (≥ ₹2,000) and policy exceptions to finance clerks.
+
+---
+
+## 📁 Project Folder Structure
+
+```text
+tarang-expense-automation/
+├── data/
+│   ├── raw/                  # Original CSVs, PDFs, and text files provided
+│   └── images/               # All receipt JPG/PNG files
+├── src/
+│   ├── __init__.py
+│   ├── config.py             # API key loading and polite failure logic
+│   ├── extractor.py          # Vision LLM/OCR API calls and JSON parsing
+│   ├── rules.py              # Business logic (Rs 2000 threshold, approval routing)
+│   └── pipeline.py           # Glues extractor and rules together for batch processing
+├── app/
+│   ├── main.py               # FastAPI backend endpoint & static UI server
+│   ├── ui.py                 # Streamlit frontend audit screen
+│   └── static/               # Modern single-screen review UI assets (HTML/CSS/JS)
+├── notebooks/
+│   └── evaluation.ipynb      # Accuracy measurement against claims_train.csv
+├── docs/
+│   ├── memo_to_nilesh.pdf    # 1-page executive business memo (PDF)
+│   ├── memo_to_nilesh.md     # 1-page executive business memo (Markdown)
+│   ├── submission-form.md    # Completed form with video link and expected score
+│   └── demo_guide.md         # 3-minute screen recording script
+├── predictions.csv           # Final output for claims_test.csv (Root directory)
+├── requirements.txt          # Python dependencies
+├── .env.example              # Template for optional API keys
+├── .gitignore
+└── README.md                 # Setup and run instructions
+```
 
 ---
 
@@ -12,19 +45,27 @@ The entire application runs **100% offline on standard CPU** with **zero paid AP
 
 ### 1. Clone & Install Dependencies
 ```bash
-# Clone the repository
 git clone <your-repo-url>
 cd Task2_BanaoTech
 
-# Install requirements
 pip install -r requirements.txt
 ```
 
-### 2. Launch the Web Service
+### 2. Launch the Application Screen
+
+You can run either the **FastAPI Web Application** or the **Streamlit Dashboard**:
+
+#### Option A: FastAPI Single-Screen Web App (Recommended)
 ```bash
-python app.py
+python app/main.py
 ```
-Open your browser and navigate to: **[http://localhost:8000](http://localhost:8000)**
+Open **[http://localhost:8000](http://localhost:8000)** in any browser.
+
+#### Option B: Streamlit Dashboard
+```bash
+streamlit run app/ui.py
+```
+Open **[http://localhost:8501](http://localhost:8501)**.
 
 ---
 
@@ -32,17 +73,17 @@ Open your browser and navigate to: **[http://localhost:8000](http://localhost:80
 
 | Deliverable | File | Description |
 | :--- | :--- | :--- |
-| **1. Predictions File** | [`predictions.csv`](./predictions.csv) | Final predictions for all 190 claims in `claims_test.csv` matching `sample_submission.csv`. |
-| **2. Working Service** | [`app.py`](./app.py) + [`static/`](./static/) | FastAPI backend with `POST /api/check-claim` and a single-screen review dashboard. |
-| **3. Evidence of Performance** | [`evaluate.py`](./evaluate.py) | Evaluation benchmark measuring accuracy against ground-truth `claims_train.csv`. |
-| **4. Executive Memo** | [`memo.md`](./memo.md) | One-page business memo to Nilesh Agrawal stating savings in rupees and recommendations. |
-| **5. 3-Minute Video Script**| [`demo_guide.md`](./demo_guide.md) | Cues and timestamped script for recording the 3-minute video walkthrough. |
-| **6. Submission Form** | [`submission-form.md`](./submission-form.md) | Completed answers to all 11 ATSLite evaluation questions. |
-| **7. Image Downloader** | [`download_images.py`](./download_images.py) | High-speed multi-threaded script that downloaded all 467 photos from ATSLite. |
+| **1. Predictions File** | [`predictions.csv`](./predictions.csv) | Final predictions for all 190 claims in `claims_test.csv` strictly matching `sample_submission.csv`. |
+| **2. Working Service** | [`app/main.py`](./app/main.py) & [`app/ui.py`](./app/ui.py) | FastAPI backend (`POST /api/check-claim`) and Streamlit dashboard. |
+| **3. Evidence of Performance** | [`notebooks/evaluation.ipynb`](./notebooks/evaluation.ipynb) & [`evaluate.py`](./evaluate.py) | Benchmark measuring extraction accuracy and policy agreement against ground truth. |
+| **4. Executive Memo** | [`docs/memo_to_nilesh.pdf`](./docs/memo_to_nilesh.pdf) / [`.md`](./docs/memo_to_nilesh.md) | One-page business memo to Nilesh Agrawal stating workload reduction (-89%) and savings in rupees. |
+| **5. 3-Minute Video Script**| [`docs/demo_guide.md`](./docs/demo_guide.md) | Timestamped script and cues for recording the 3-minute video walkthrough. |
+| **6. Submission Form** | [`docs/submission-form.md`](./docs/submission-form.md) | Completed answers to all 11 ATSLite evaluation questions. |
+| **7. Image Downloader** | [`download_images.py`](./download_images.py) | High-speed multi-threaded downloader that retrieved all 467 photos from ATSLite. |
 
 ---
 
-## 🛠️ Architecture & How It Works
+## 🛠️ Architecture & Pipeline Flow
 
 ```
 [ Receipt Photo + Claim Metadata ]
@@ -97,65 +138,11 @@ For the 190 test claims in `claims_test.csv`:
 python generate_predictions.py
 ```
 
-### Run Accuracy Benchmark on `claims_train.csv`:
+### Run Evaluation Suite:
 ```bash
 python evaluate.py
 ```
-
----
-
-## 🌐 API Endpoint Specification
-
-### `POST /api/check-claim`
-Evaluates a single expense claim and receipt photograph.
-
-**Form Data Parameters:**
-- `file`: *(Optional)* Image file upload (JPEG/PNG).
-- `existing_image`: *(Optional)* Filename of an existing receipt in `images/`.
-- `claim_id`: Claim identifier (e.g. `CLM-31086`).
-- `emp_id`: Representative ID (e.g. `TPD-0412`).
-- `category`: `Fuel` | `Food` | `Lodging` | `Local travel` | `Courier` | `Parking`.
-- `amount_claimed`: Amount claimed by representative (₹).
-- `expense_date`: Date entered by representative.
-- `vendor`: Vendor entered by representative.
-- `rep_comment`: *(Optional)* Representative's comment.
-
-**Example Response:**
-```json
-{
-  "claim_id": "CLM-31086",
-  "extracted_fields": {
-    "vendor": "HPCL",
-    "receipt_date": "2026-07-18",
-    "receipt_number": "002229",
-    "gstin": "27AAACH1234D1Z5",
-    "total_amount": 300.0
-  },
-  "decision": "approve",
-  "reasons": [
-    "auto-approved: valid receipt under Rs 2,000 adhering to policy"
-  ],
-  "policy_rules": [
-    {
-      "name": "Under ₹2,000 Threshold",
-      "passed": true,
-      "detail": "Receipt amount is ₹300.00 (< ₹2,000 auto-approval threshold)"
-    },
-    {
-      "name": "Amount Accuracy",
-      "passed": true,
-      "detail": "Claimed ₹300.00 matches receipt ₹300.00"
-    },
-    {
-      "name": "Fuel Vehicle Verification",
-      "passed": true,
-      "detail": "Vehicle MH31 EK 4471 verified on bill"
-    }
-  ],
-  "confidence": 94.2,
-  "engine": "RapidOCR ONNX (Local Zero-Cost)"
-}
-```
+*(Or open [`notebooks/evaluation.ipynb`](./notebooks/evaluation.ipynb) in Jupyter / VS Code)*
 
 ---
 
