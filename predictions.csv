@@ -1,0 +1,191 @@
+claim_id,vendor,receipt_date,receipt_number,gstin,total_amount,decision,reason
+CLM-31086,HPCL,2026-07-18,002229,,300,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31087,GREENLEAF RESTAURANT,2026-07-16,OICE,27YUFFZ9311K2ZV,304,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31088,HIGHWAYKINGDHABA,2026-07-11,1341,,260,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31090,"Hingna Road,Nagpur",2026-07-14,,,220,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31091,SAIRAMTEA&SNACKS,2026-07-13,,,405,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31094,Rupees (in words):,2026-07-10,,,8305,review,amount mismatch: claimed Rs 250.00 vs bill Rs 8305.00
+CLM-31095,VIDARBHAEXPRESSCOURIER,2026-07-15,VX81712845,,330.4,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31096,HPCL,2026-07-12,001846,,668.11,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31097,BPCL,2026-07-12,004478,27DPAFU4120X1ZM,400,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31098,"Dhantoli,Nagpur",2026-07-12,OICE,,730,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31102,SHIVAM FAMILYRESTAURANT,2026-07-20,OICE,,452,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31105,ANNAPURNADINING HALL,2026-07-16,OICE,27GIZFL1893Q2ZK,567,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31106,GREENLEAFRESTAURANT,2026-07-19,OICE,27YUFFZ9311K2ZV,494,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31107,Prompt Parcel Services,2026-07-12,,,330.4,review,bill not attached or photo unreadable
+CLM-31110,PROMPTPARCELSERVICES,2026-07-12,PP52882767,27IRWFN4293M2Z1,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31111,SITABULDIMULTILEVELPARKING,2026-07-16,115811,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31112,SITABULDIMULTILEVELPARKING,2026-07-14,115488,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31115,BPCL,2026-07-21,001486,,511.67,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31118,HPCL,2026-07-14,003418,,283.44,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31120,HPCL,2026-06-24,002691,,300,review,vehicle number MH31 DX 0981 not found on fuel receipt
+CLM-31122,BPCL,2026-06-22,003752,27DPAFU4120X1ZM,200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31123,CAFECOFFEECORNER,2026-07-14,OICE,27TABPX3765R2Z6,252,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31126,SHIVAMFAMILYRESTAURANT,2026-07-14,OICE,27XMECH9812R2ZH,210,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31130,Dhantoli. Nagpur,2026-07-12,OICE,,982,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31132,HPCL,2026-07-20,003651,,150,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31133,Pump:,2026-07-17,887436,,300,review,vehicle number MH32 BB 1205 not found on fuel receipt
+CLM-31137,SPICEROUTEKITCHEN,2026-07-15,OICE,27NCRPN1784A3Z1,399,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31140,Date:21.07.2026,2026-07-21,OICE,,294,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31142,"HingnaRoed,Nagpur",2026-07-15,,,350,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31146,Shree Ganesh Tours & Travels,2026-07-17,,,470,review,bill not attached or photo unreadable
+CLM-31148,TAXINVOICE,2026-07-15,OICE,,2352,review,"amount Rs 2352 >= Rs 2,000 (clerk review required); lodging bill missing mandatory GSTIN"
+CLM-31152,MEDICALSQUAREPAY&PARK,2026-07-13,105339,,20,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31156,HPCL,2026-07-14,001991,,313.73,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31158,GRAND TOTAL,2026-07-14,OICE,,410,review,amount mismatch: claimed Rs 430.00 vs bill Rs 410.00
+CLM-31160,SpeedLink Couriers,2026-07-15,,,339.84,review,bill not attached or photo unreadable
+CLM-31161,TAXINVOICE,2026-07-14,OICE,27UVQFW9408Y1ZS,2352,review,duplicate claim: same bill number OICE already processed
+CLM-31164,IndianOil,2026-07-21,8e7635,,300,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31168,IndianOil,2026-07-23,009209,,500,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31170,SPICE ROUTEKITCHEN,2026-07-15,OICE,27NCRPN1784A3Z1,178,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31171,Date_18/7/2026,2026-07-18,3543,,190,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31173,SAIRAMTEA& SNACKS,2026-07-19,,,330,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31176,SAIRAM TEA&SNACKS,2026-07-02,,,190,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31178,SHREEGANESHTOURS&TRAVELS,2026-07-20,3928,,540,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31182,ROYALTRAVELS,2026-07-20,8485,,360,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31185,PROMPTPARCELSERVICES,2026-07-23,,27IRWFN4293M2Z1,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31188,InvoiceNo:HKC/26-27/5295,2026-07-15,oiceNo,27HPFCA5856Y3ZE,4032,review,"amount Rs 4032 >= Rs 2,000 (clerk review required); lodging Rs 4032 exceeds grade M1 limit of Rs 3000"
+CLM-31190,om sai fuel point,2026-07-24,,,400,review,bill not attached or photo unreadable
+CLM-31191,IndianOil,2026-07-20,007482,,308.69,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31192,SPICEROUTEKITCHEN,2026-07-22,OICE,27NCRPN1784A3Z1,1200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31195,PROMPTPARCELSERVICES,2026-07-16,,27IRWFN4293M2Z1,330.4,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31197,HPCL,2026-07-18,003508,,291.81,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31201,ASHIRWADVEGRESTAURANT,2026-07-19,OICE,,536,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31203,"HingnaRoad,Nagpur",2026-07-22,712026,,1180,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31204,SPEEDLINKCOURIERS,2026-06-28,202616,27HJXCW9975D1ZJ,330.4,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31206,New Highway Service Station Nagpur,2026-07-22,,,100,review,bill not attached or photo unreadable
+CLM-31207,ANNAPURNA DININGHALL,2026-07-27,OICE,27GIZFL1893Q2ZK,2194,review,"amount Rs 2194 >= Rs 2,000 (clerk review required)"
+CLM-31209,HIGHWAYKINGDHABA,2026-07-24,,,480,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31211,HIGHWAYKINGDHABA,2026-07-19,,,185,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31214,SAIRAMTEA&SNACKS,2026-07-21,,,100,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31217,SHREEGANESHTOURS& TRAVELS,2026-07-25,,,6607,review,amount mismatch: claimed Rs 660.00 vs bill Rs 6607.00
+CLM-31221,PROMPTPARCELSERVICES,2026-07-24,,,330.4,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31222,SITABULDIMULTILEVELPARKING,2026-07-23,116051,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31225,HPCL,2026-07-21,003760,,606.62,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31228,HPCL,2026-07-28,884302,,300,review,vehicle number MH31 DX 0981 not found on fuel receipt
+CLM-31230,HPCL,2026-07-27,004185,,150,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31233,"Thank you,visit again!",2026-07-20,OICE,,712,review,amount mismatch: claimed Rs 462.00 vs bill Rs 712.00
+CLM-31236,ANNAPURNADININGHALL,2026-07-27,OICE,,483,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31240,CAFECOFFEECORNER,2026-07-25,OICE,27TABPX3765R2Z6,425,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31243,SHREEGANESHTOURS&TRAVELS,2026-07-27,4043,,790,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31244,Driver'sSignature,2026-07-23,,,3974,review,amount mismatch: claimed Rs 1100.00 vs bill Rs 3974.00
+CLM-31247,VIDARBHAEXPRESSCOURIER,2026-07-24,,,330.4,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31249,VIDARBHAEXPRESSCOURIER,2026-07-19,VX21608808,,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31251,SPEEDLINKCOURIERS,2026-07-28,202621,27HJXCW9975D1ZJ,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31255,SITABULDIMULTILEVELPARKING,2026-07-24,116964,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31256,SITABULDIMULTILEVELPARKING,2026-07-24,116520,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31258,BPCL,2026-07-23,001556,,500,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31261,IndianOil,2026-07-29,007878,,606.91,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31263,HPCL,2026-07-21,003689,,200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31265,IndianOil,2026-07-22,009169,,300,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31266,HPCL,2026-06-13,002123,,300,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31270,BPCL,2026-07-26,001600,,200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31272,SPICEROUTEKITCHEN,2026-07-22,OICE,27NCRPN1784A3Z1,331,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31274,"Dhantoli,Nagpur",2026-07-27,OICE,,693,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31275,SHIVAM FAMILYRESTAURANT,2026-07-20,OICE,27XMECH9812R2ZH,452,review,duplicate claim: same bill number OICE already processed
+CLM-31279,SHIVAM FAMILYRESTAURANT,2026-07-26,OICE,27XMECH9812R2ZH,357,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31280,sai ramt ea & snacks,2026-07-22,,,330,review,bill not attached or photo unreadable
+CLM-31284,TAXINVOICE,2026-07-23,OICE,27HPFCA5856Y3ZE,2016,review,"amount Rs 2016 >= Rs 2,000 (clerk review required)"
+CLM-31288,gulmohar hotel executive,2026-07-28,,,2852,review,bill not attached or photo unreadable
+CLM-31292,BPCL,2026-07-29,e81654,,258.88,review,amount mismatch: claimed Rs 450.00 vs bill Rs 258.88
+CLM-31294,HPCL,2026-07-22,003881,,542.82,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31296,IndianOil,2026-07-21,007682,,200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31298,SPICEROUTEKITCHEN,2026-07-24,OICE,27NCRPN1784A3Z1,430,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31299,ASHIRWADVEGRESTAURANT,2026-07-23,OICE,,1472,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31301,"Dhantol1,Nagpur",2026-07-24,OICE,,735,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31305,ROYALTRAVELS,2026-07-30,8506,,3807,review,amount mismatch: claimed Rs 380.00 vs bill Rs 3807.00
+CLM-31308,ROYALTRAVELS,2026-07-25,,,8501,review,amount mismatch: claimed Rs 480.00 vs bill Rs 8501.00
+CLM-31310,SHREEGANESHTOURS&TRAVELS,2026-07-23,3950,,32,review,amount mismatch: claimed Rs 1170.00 vs bill Rs 32.00
+CLM-31311,TAXINVOICE,2026-07-23,OICE,27PMLCE5129S3ZO,2352,review,duplicate claim: same bill number OICE already processed
+CLM-31314,SITABULDIMULTILEVELPARKING,2026-07-29,118129,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31315,BPCL,2026-07-31,004980,27DPAFU4120X1ZM,200,review,amount mismatch: claimed Rs 20.00 vs bill Rs 200.00
+CLM-31317,ASHIRWADVEGRESTAURANT,2026-07-24,OICE,,2268,review,"amount Rs 2268 >= Rs 2,000 (clerk review required)"
+CLM-31321,"Dhantoli,Nagpur",2026-07-27,OICE,,808,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31324,"Main Road,Yavatmal",2026-07-29,OICE,27MTSPF4455T1ZB,998,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31328,HIGHWAYKINGDHABA,2026-07-23,1377,,235,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31329,SHREE GANESHTOURS & TRAVELS,2026-07-25,4011,,740,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31331,MAADURGACABSERVICE,2026-06-14,8219,,1230,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31333,HPCL,2026-08-01,004744,,4744,review,amount mismatch: claimed Rs 100.00 vs bill Rs 4744.00
+CLM-31335,HPCL,2026-08-01,004585,,1313.77,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31336,HPCL,2026-07-26,004104,,2607.43,review,"amount Rs 2607 >= Rs 2,000 (clerk review required)"
+CLM-31339,BPCL,2026-07-29,004802,27DPAFU4120X1ZM,200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31340,GREENLEAFRESTAURANT,2026-07-24,OICE,27YUFFZ9311K2ZV,420,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31341,ASHIRWADVEGRESTAURANT,2026-07-26,OICE,,840,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31344,Highway King Dhaba,2026-07-28,,,315,review,bill not attached or photo unreadable
+CLM-31347,"HingnaRoad,Nagpur",2026-08-01,3554,,270,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31351,Shree Ganesh Tours & Travels,2026-07-29,,,930,review,bill not attached or photo unreadable
+CLM-31352,PROMPTPARCELSERVICES,2026-07-23,,27IRWFN4293M2Z1,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31356,SITABULDIMULTILEVELPARKING,2026-07-30,118349,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31359,MEDICALSQUAREPAY&PARK,2026-08-01,105547,,20,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31361,IndianOil,2026-07-24,007720,,250,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31362,BPCL,2026-07-27,004694,27DPAFU4120X1ZM,200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31363,Hotel Shirdi Saibaba Bhojnalaya Nagpur,2026-07-27,,,525,review,bill not attached or photo unreadable
+CLM-31366,HIGHWAY KINGDHARA,2026-06-09,,,1250,review,amount mismatch: claimed Rs 270.00 vs bill Rs 1250.00
+CLM-31367,VIDARBHAEXPRESSCOURIER,2026-07-30,VX79894828,,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31368,SAIPALACELODGE,2026-08-01,OICE,27GFZCR8659B2Z4,3136,review,"amount Rs 3136 >= Rs 2,000 (clerk review required); lodging Rs 3136 exceeds grade M1 limit of Rs 3000"
+CLM-31369,HPCL,2026-08-03,004810,,200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31373,HPCL,2026-07-29,004426,,150,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31374,"Main Road, Yavatmal",2026-08-03,OICE,27MTSPF4455T1ZB,1092,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31378,SAIRAMTEA&SNACKS,2026-07-25,,,60,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31382,SPEEDLINKCOURIERS,2026-07-29,202613,27HJXCW9975D1ZJ,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31386,BPCL,2026-08-03,891723,,250,review,amount mismatch: claimed Rs 750.00 vs bill Rs 250.00
+CLM-31387,IndianOil,2026-07-28,009346,,150,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31388,500.00,2026-07-27,002436,,500,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31391,HOTEL SAIBABA BHOJNALAYA,2026-07-26,,,420,review,bill not attached or photo unreadable
+CLM-31392,SPICEROUTEKITCHEN,2026-07-31,OICE,27NCRPN1784A3Z1,1124,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31393,CAFECOFFEECORNER,2026-07-31,OICE,27TABPX3765R2Z6,546,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31397,PUNJABITADKADHABA,2026-07-26,,,270,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31401,SHREEGANESHTOURS & TRAVELS,2026-07-26,4032,,1390,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31402,SPEEDLINKCOURIERS,2026-06-23,SL36715972,27HJXCW9975D1ZJ,330.4,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31405,TAXINVOICE,2026-08-03,OICE,27UVQFW9408YIZS,4704,review,"amount Rs 4704 >= Rs 2,000 (clerk review required); lodging Rs 4704 exceeds grade M1 limit of Rs 3000"
+CLM-31407,SITABULDIMULTILEVELPARKING,2026-07-31,118663,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31411,MEDICALSQUAREPAY&PARK,2026-08-02,106049,,20,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31412,HPCL,2026-07-27,002589,,300,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31414,IndianOil,2026-07-28,009395,,300,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31415,BPCL,2026-07-30,004852,27DPAFU4128X1ZM,500,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31417,ASHIRWAD VEG RESTAURANT,2026-08-04,OICE,,567,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31418,ANNAPURNA DINING HALL,2026-06-12,OICE,27GIZFL1093Q2ZK,536,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31421,SAIRAMTEA&SNACKS,2026-07-28,,,385,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31422,TAXINVOICE,2026-07-30,OICE,27HPFCA5856Y3ZE,4032,review,"amount Rs 4032 >= Rs 2,000 (clerk review required); lodging Rs 4032 exceeds grade M1 limit of Rs 3000"
+CLM-31423,SITABULDIMULTILEVELPARKING,2026-07-28,117592,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31424,SITABULDIMULTILEVELPARKING,2026-08-05,119915,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31428,SITABULDIMULTILEVELPARKING,2026-08-03,119554,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31429,IndianOil,2026-08-04,008014,,100,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31430,"Dhantoli, Nagpur",2026-07-29,OICE,,220,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31432,CAFECOFFEECORNER,2026-08-04,OICE,27TABPX3765R2Z6,588,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31433,ANNAPURNA DINING HALL,2026-07-28,OICE,,273,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31436,SHIVAM FAMILYRESTAURANT,2026-07-31,OICE,27XMECH9812R2ZH,756,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31438,ANNAPURNADINING HALL,2026-07-28,OICE,27GIZFL1093Q2ZK,651,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31439,Sai Ram Tea & Snacks,2026-08-05,,,240,review,bill not attached or photo unreadable
+CLM-31440,HIGHWAYKINGDHABA,2026-08-02,,,245,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31444,IndianOil,2026-07-30,e87965,,250,review,amount mismatch: claimed Rs 520.00 vs bill Rs 250.00
+CLM-31447,HPCL,2026-07-30,004471,,300,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31451,BPCL,2026-08-04,001882,,200,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31453,IndianOil,2026-08-02,009440,,250,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31454,HPCL,2026-08-05,002766,,400,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31457,HPCL,2026-08-05,004864,,400,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31460,TOTAL,2026-08-05,005049,27DPAFU4120X1ZM,500,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31461,HPCL,2026-07-31,002706,,300,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31465,Gajanan Petroleum,2026-08-04,,,400,review,bill not attached or photo unreadable
+CLM-31469,100.00,2026-08-04,007993,,100,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31473,SPICE ROUTEKITCHEN,2026-08-03,OICE,27NCRPN1784A3Z1,756,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31474,CAFECOFFEECORNER,2026-08-05,OICE,27TABPX3765R2Z6,746,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31475,CAFECOFFEECORNER,2026-06-21,OICE,27TABPX3765R2Z6,987,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31478,CAFECOFFEECORNER,2026-08-05,,,1082,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31479,CAFECOFFEECORNER,2026-08-03,OICE,27TABPX3765R2Z6,567,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31480,"Dhantol1,Nagpur",2026-07-24,OICE,,735,review,duplicate claim: same bill number OICE already processed
+CLM-31483,ANNAPURNADININGHALL,2026-08-03,OICE,27GIZFL1093Q2ZK,798,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31485,PUNJABITADKA DHABA,2026-08-04,,,410,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31486,Punjabi Tadka Dhaba,2026-08-03,,,500,review,bill not attached or photo unreadable
+CLM-31490,HingnaRoadNagpur,2026-07-30,,,370,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31494,HIGHWAYKINGDHABA,2026-08-05,,,165,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31495,MAADURGACABSERVICE,2026-08-03,8323,,706,review,amount mismatch: claimed Rs 910.00 vs bill Rs 706.00
+CLM-31497,SHREE GANESHTOURS& TRAVELS,2026-07-23,3950,,1107,review,amount mismatch: claimed Rs 1170.00 vs bill Rs 1107.00
+CLM-31501,VIDARBHAEXPRESSCOURIER,2026-08-01,VX53559174,,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31503,VIDARBHAEXPRESSCOURIER,2026-08-04,202610,,1226.56,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31506,SPEEDLINKCOURIERS,2026-08-02,282619,,141.6,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31509,Shirdi Sai Palace Lodge,2026-08-01,,,3136,review,bill not attached or photo unreadable
+CLM-31512,InvoiceDate:05.08.2026,2026-08-05,OICE,27HPFCA5856Y3ZE,2016,review,"amount Rs 2016 >= Rs 2,000 (clerk review required)"
+CLM-31516,SITABULDIMULTILEVELPARKING,2026-08-01,119019,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31519,SITABULDIMULTILEVELPARKING,2026-08-05,121071,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
+CLM-31523,SITABULDI MULTILEVELPARKING,2026-08-05,120477,,30,approve,"auto-approved: valid receipt under Rs 2,000 adhering to policy"
