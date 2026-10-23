@@ -43,13 +43,17 @@ class ExpensePipeline:
             extracted, claim_dict, seen_receipts, self.employees
         )
 
+        has_photo = extracted.get('has_photo', False)
+        vendor_val = str(extracted.get('vendor') or (claim_dict.get('vendor', '') if has_photo else "")).strip()
+        date_val = str(extracted.get('receipt_date') or (normalize_date_to_iso(str(claim_dict.get('expense_date', ''))) if has_photo else "")).strip()
+
         return {
             'claim_id': str(claim_dict.get('claim_id', '')).strip(),
-            'vendor': str(extracted.get('vendor') or claim_dict.get('vendor', '')).strip(),
-            'receipt_date': str(extracted.get('receipt_date') or normalize_date_to_iso(str(claim_dict.get('expense_date', '')))).strip(),
-            'receipt_number': str(extracted.get('receipt_number') or "").strip(),
-            'gstin': str(extracted.get('gstin') or "").strip(),
-            'total_amount': extracted.get('total_amount'),
+            'vendor': vendor_val if has_photo else "",
+            'receipt_date': date_val if has_photo else "",
+            'receipt_number': str(extracted.get('receipt_number') or "").strip() if has_photo else "",
+            'gstin': str(extracted.get('gstin') or "").strip() if has_photo else "",
+            'total_amount': extracted.get('total_amount') if has_photo else None,
             'decision': decision,
             'reason': reason,
             'policy_rules': policy_rules,
@@ -102,3 +106,8 @@ class ExpensePipeline:
         pred_df.to_csv(output_csv, index=False)
         print(f"Predictions successfully written to {output_csv} in {time.time() - start_time:.1f}s")
         return pred_df
+
+
+if __name__ == '__main__':
+    pipeline = ExpensePipeline()
+    pipeline.generate_predictions_csv()

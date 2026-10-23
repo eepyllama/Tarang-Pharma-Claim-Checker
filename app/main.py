@@ -93,13 +93,21 @@ async def check_claim(
     expense_date: str = Form("2026-06-11"),
     vendor: str = Form("Laxmi Auto Fuels"),
     rep_comment: str = Form("Petrol two wheeler"),
-    existing_image: Optional[str] = Form(None)
+    existing_image: Optional[str] = Form(None),
+    engine: str = Form("local")
 ):
     """
     Main audit endpoint: Takes a receipt photo and claim details.
     Returns extracted fields, approve/review decision, and rule breakdown.
+    Politely falls back to local zero-cost RapidOCR if a paid model API key is absent.
     """
     image_path = None
+    engine_note = None
+
+    if engine in ["openai", "gemini"]:
+        status = settings.check_paid_api_availability(engine)
+        if not status["available"]:
+            engine_note = status["message"]
 
     if file and file.filename:
         safe_name = f"upload_{file.filename}"
@@ -143,7 +151,18 @@ async def check_claim(
         'confidence': result['confidence'],
         'ocr_lines_count': result['ocr_lines_count'],
         'image_url': image_url,
-        'engine': 'RapidOCR ONNX (Local Zero-Cost)'
+        'engine': 'RapidOCR ONNX (Local Zero-Cost)' if not engine_note else 'RapidOCR ONNX (Polite Fallback)',
+        'engine_note': engine_note
+    }
+
+
+@app.get("/api/ai-status")
+async def get_ai_status():
+    """Returns status and polite guidance for optional paid model APIs."""
+    return {
+        "openai": settings.check_paid_api_availability("openai"),
+        "gemini": settings.check_paid_api_availability("gemini"),
+        "active_engine": "RapidOCR ONNX Runtime (Zero-Cost Local CPU, 100% Offline)"
     }
 
 

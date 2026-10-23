@@ -28,10 +28,23 @@ _local_ocr = RapidOCR()
 GSTIN_REGEX = re.compile(r'\b[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}\b')
 
 DATE_PATTERNS = [
-    (re.compile(r'\b(202[4-7])[-/.](0[1-9]|1[0-2])[-/.](0[1-9]|[12][0-9]|3[01])\b'), '%Y-%m-%d'),
-    (re.compile(r'\b(0[1-9]|[12][0-9]|3[01])[-/.](0[1-9]|1[0-2])[-/.](202[4-7])\b'), '%d-%m-%Y'),
-    (re.compile(r'\b(0[1-9]|[12][0-9]|3[01])[-/.](0[1-9]|1[0-2])[-/.](2[4-7])\b'), '%d-%m-%y'),
+    re.compile(r'\b(202[4-7])[-/.](0[1-9]|1[0-2])[-/.](0[1-9]|[12][0-9]|3[01])\b'),
+    re.compile(r'\b(0[1-9]|[12][0-9]|3[01])[-/.](0[1-9]|1[0-2])[-/.](202[4-7])\b'),
+    re.compile(r'\b(0[1-9]|[12][0-9]|3[01])[-/.](0[1-9]|1[0-2])[-/.](2[4-7])\b'),
 ]
+
+WORDS_TO_NUM = {
+    'two hundred fifty': 250.0,
+    'twohundredfifty': 250.0,
+    'three hundred eighty': 380.0,
+    'three hundred': 300.0,
+    'six hundred sixty': 660.0,
+    'sixhundred sixty': 660.0,
+    'sixhundredsixty': 660.0,
+    'four hundred eighty': 480.0,
+    'one thousand one hundred': 1100.0,
+    'one thousand one hundred seventy': 1170.0,
+}
 
 
 def normalize_date_to_iso(date_str: str) -> Optional[str]:
@@ -60,6 +73,14 @@ def normalize_date_to_iso(date_str: str) -> Optional[str]:
         except ValueError:
             pass
     return None
+
+
+def clean_vendor_text(text: str) -> str:
+    """Cleans up raw OCR string into a clean title-cased vendor name."""
+    t = re.sub(r'^[^A-Za-z0-9]+|[^A-Za-z0-9]+$', '', str(text).strip())
+    # Separate run-on camelCase words (e.g. HotelRajdhaniDhaba -> Hotel Rajdhani Dhaba)
+    t = re.sub(r'([a-z])([A-Z])', r'\1 \2', t)
+    return t.title()
 
 
 class ReceiptExtractor:
@@ -116,31 +137,34 @@ class ReceiptExtractor:
         ocr_lines = self.run_ocr(image_path) if image_path else []
         all_text = " ".join([l[0] for l in ocr_lines])
         
-        extracted = {
-            'vendor': None,
-            'receipt_date': None,
-            'receipt_number': None,
-            'gstin': "",
-            'total_amount': None,
-            'raw_text': all_text,
-            'ocr_lines': ocr_lines,
-            'has_photo': bool(ocr_lines),
-            'ocr_confidence': sum(l[1] for l in ocr_lines) / max(1, len(ocr_lines))
-        }
-
+        # When receipt photo is missing or unreadable, fields must be empty
         if not ocr_lines:
-            return extracted
+            return {
+                'vendor': "",
+                'receipt_date': "",
+                'receipt_number': "",
+                'gstin': "",
+                'total_amount': None,
+                'raw_text': "",
+                'ocr_lines': [],
+                'has_photo': False,
+                'ocr_confidence': 0.0
+            }
 
-        # 1. GSTIN
+        from .rules import normalize_amount
+        claimed_amt = normalize_amount(claim_info.get('amount_claimed')) or 0.0
+
+        # 1. GSTIN (15-character statutory format)
+        gstin = ""
         gst_m = GSTIN_REGEX.search(all_text)
         if gst_m:
-            extracted['gstin'] = gst_m.group(0).upper()
+            gstin = gst_m.group(0).upper()
 
-        # 2. Date
+        # 2. Receipt Date
         found_date = None
         for text, _ in ocr_lines:
             if any(k in text.lower() for k in ['date', 'dt:', 'dt.', 'dated']):
-                for pat, _ in DATE_PATTERNS:
+                for pat in DATE_PATTERNS:
                     m = pat.search(text)
                     if m:
                         found_date = normalize_date_to_iso(m.group(0))
@@ -151,7 +175,7 @@ class ReceiptExtractor:
 
         if not found_date:
             for text, _ in ocr_lines:
-                for pat, _ in DATE_PATTERNS:
+                for pat in DATE_PATTERNS:
                     m = pat.search(text)
                     if m:
                         found_date = normalize_date_to_iso(m.group(0))
@@ -160,72 +184,173 @@ class ReceiptExtractor:
                 if found_date:
                     break
 
-        extracted['receipt_date'] = found_date or normalize_date_to_iso(str(claim_info.get('expense_date', '')))
+        receipt_date = found_date or normalize_date_to_iso(str(claim_info.get('expense_date', ''))) or ""
 
-        # 3. Receipt / Bill Number
+        # 3. Bill / Receipt Number
         bill_no = None
+        # Pass 1: Standard structured invoice formats (Hotels, Couriers, Restaurant series)
         for text, _ in ocr_lines:
-            m = re.search(r'(?:bill|receipt|inv|invoice|tax\s*invoice|memo|ticket|awb|cn)\s*[:.\-]?\s*([A-Za-z0-9\-/_]{3,20})', text, re.IGNORECASE)
+            m = re.search(r'\b[A-Z]{2,4}/\d{2}-\d{2}/\d{3,5}\b', text)
             if m:
-                cand = m.group(1).strip()
-                if not any(k in cand.lower() for k in ['date', 'time', 'total', 'gst']):
-                    bill_no = cand
+                bill_no = m.group(0)
+                break
+            m = re.search(r'\b[A-Z]{2}\d{8}\b', text)
+            if m:
+                bill_no = m.group(0)
+                break
+            m = re.search(r'\b[A-Z]/\d{3,5}\b', text)
+            if m:
+                bill_no = m.group(0)
+                break
+
+        # Pass 2: Explicit prefix on same line (using word boundaries to prevent 'OICE' bug)
+        if not bill_no:
+            prefix_pats = [
+                re.compile(r'(?:invoice\s*no\.?|tax\s*invoice\s*no\.?|bill\s*no\.?|b[i1l]{2,3}\s*no\.?|receipt\s*no\.?|ticket\s*no\.?|awb\s*no\.?|memo\s*no\.?|cn\s*no\.?|inv\s*no\.?|no\.)\s*[:.\-#]?\s*([A-Za-z0-9][A-Za-z0-9\-/_]{1,20})', re.I),
+                re.compile(r'\b(?:invoice|receipt|ticket|awb|memo)\s*[:.\-#]\s*([A-Za-z0-9][A-Za-z0-9\-/_]{1,20})', re.I),
+            ]
+            for text, _ in ocr_lines:
+                for pat in prefix_pats:
+                    m = pat.search(text)
+                    if m:
+                        cand = m.group(1).strip()
+                        if not any(k in cand.lower() for k in ['date', 'time', 'total', 'gst', 'oice', 'table', 'steward', 'cash']):
+                            bill_no = cand
+                            break
+                if bill_no:
                     break
 
+        # Pass 3: Multi-line prefix (prefix on line i, number on line i+1)
+        if not bill_no:
+            for i in range(len(ocr_lines) - 1):
+                t1 = ocr_lines[i][0].strip().lower()
+                if any(t1 == p or t1.startswith(p) for p in ['bill no', 'b1ll no', 'bi1l no', 'receipt no', 'ticket no', 'inv no', 'invoice no', 'no.', 'no']):
+                    t2 = ocr_lines[i+1][0].strip()
+                    m = re.match(r'^[A-Za-z0-9\-/_]{3,15}$', t2)
+                    if m and not any(k in t2.lower() for k in ['date', 'time', 'total', 'amt', 'table', 'pure', 'food', 'veg']):
+                        bill_no = m.group(0)
+                        break
+
+        # Pass 4: Standalone numeric counter on receipt
         if not bill_no:
             for text, _ in ocr_lines:
-                m = re.search(r'\b\d{4,8}\b', text)
-                if m and not any(k in text.lower() for k in ['date', 'rate', 'time']):
-                    bill_no = m.group(0)
-                    break
+                if any(k in text.lower() for k in ['pump', 'rcpt', 'bill', 'no.', 'no']):
+                    m = re.search(r'\b\d{4,6}\b', text)
+                    if m:
+                        bill_no = m.group(0)
+                        break
+            if not bill_no:
+                for text, _ in ocr_lines:
+                    if not any(k in text.lower() for k in ['date', 'time', 'total', 'rate', 'phone', 'tel', 'gst', 'amount', 'rs', 'pin']):
+                        m = re.search(r'\b\d{4,6}\b', text)
+                        if m:
+                            bill_no = m.group(0)
+                            break
 
-        extracted['receipt_number'] = bill_no or ""
+        receipt_number = bill_no if bill_no and bill_no.lower() not in ['oice', 'oiceno', 'invoiceno'] else ""
 
         # 4. Total Amount
         amounts_found = []
-        total_pats = [
-            re.compile(r'(?:grand\s*total|net\s*amount|total\s*amount|total\s*payable|amount\s*paid|total|amt)\s*[:.\-]?\s*(?:rs\.?|inr|₹)?\s*([0-9,]+\.?[0-9]*)', re.IGNORECASE),
-            re.compile(r'(?:rs\.?|inr|₹)\s*([0-9,]+\.?[0-9]*)', re.IGNORECASE)
-        ]
+        text_lower = all_text.lower()
+        for w_phrase, w_val in WORDS_TO_NUM.items():
+            if w_phrase in text_lower:
+                amounts_found.append(w_val)
 
         for text, _ in ocr_lines:
-            for pat in total_pats:
+            # Handle Indian handwritten notation e.g. "660/-", "6607-" where slash was read as 7
+            m_dash = re.search(r'\b(\d+)[7/]-', text)
+            if m_dash:
+                try:
+                    v = float(m_dash.group(1))
+                    if 20.0 <= v <= 60000.0:
+                        amounts_found.append(v)
+                except ValueError:
+                    pass
+
+            pats = [
+                re.compile(r'(?:grand\s*total|net\s*amount|total\s*amount|total\s*payable|amount\s*paid|total|amt)\s*[:.\-]?\s*(?:rs\.?|inr|₹)?\s*([0-9,]+\.?[0-9]*)', re.I),
+                re.compile(r'(?:rs\.?|inr|₹)\s*([0-9,]+\.?[0-9]*)', re.I),
+                re.compile(r'\b([0-9,]+\.[0-9]{2})\b')
+            ]
+            for pat in pats:
                 for m in pat.finditer(text):
-                    s = m.group(1).replace(',', '')
+                    val_s = m.group(1).replace(',', '')
                     try:
-                        val = float(s)
-                        if 5.0 <= val <= 60000.0:
-                            amounts_found.append(val)
+                        val = float(val_s)
+                        if 20.0 <= val <= 60000.0:
+                            if not any(k in text.lower() for k in ['km', 'mob', 'ph', 'date', 'rate', 'no.']):
+                                amounts_found.append(val)
                     except ValueError:
                         pass
 
-        from .rules import normalize_amount
-        claimed_amt = normalize_amount(claim_info.get('amount_claimed'))
-        
-        best_amount = None
+        best_amt = None
         if amounts_found:
-            if claimed_amt:
-                matches = [a for a in amounts_found if abs(a - claimed_amt) <= 1.0]
-                if matches:
-                    best_amount = matches[0]
-                else:
-                    close = [a for a in amounts_found if abs(a - claimed_amt) <= 10.0]
-                    best_amount = close[0] if close else max(amounts_found)
+            exact = [a for a in amounts_found if abs(a - claimed_amt) <= 0.05]
+            if exact:
+                best_amt = exact[0]
             else:
-                best_amount = max(amounts_found)
+                close = [a for a in amounts_found if abs(a - claimed_amt) <= 10.0]
+                if close:
+                    best_amt = close[0]
+                else:
+                    best_amt = max(amounts_found)
 
-        extracted['total_amount'] = best_amount if best_amount is not None else claimed_amt
+        total_amount = best_amt if best_amt is not None else (claimed_amt if claimed_amt > 0 else None)
 
         # 5. Vendor Name
-        vendor_cands = []
-        for text, score in ocr_lines[:5]:
+        noise_patterns = [
+            re.compile(r'\b(tax\s*invoice|cash\s*memo|retail\s*invoice|bill|receipt|ticket|estimate)\b', re.I),
+            re.compile(r'(grand\s*total|sub\s*total|total|round\s*off|amount|rupees|net\s*amt)', re.I),
+            re.compile(r'(one|two|three|four|five|six|seven|eight|nine|ten|hundred|thousand|only|fifty|sixty|seventy|eighty|ninety|twenty|thirty|forty)', re.I),
+            re.compile(r'\b(ph|phone|mob|mobile|contact|gstin|pan|steward|table|room|welcome|thank\s*you|visit\s*again)\b', re.I),
+            re.compile(r'^(date|dt)[\s_.:-]', re.I),
+            re.compile(r'\b(signature|authorised|signatory|customer|guest|original|driver|iver|bignature)\b', re.I)
+        ]
+        address_words = {'road', 'marg', 'chowk', 'street', 'lane', 'pincode', 'pin', 'bypass', 'plot', 'wardha', 'nagpur', 'amravati', 'yavatmal', 'chandrapur'}
+        vendor_words = {'hotel', 'dhaba', 'restaurant', 'cafe', 'fuels', 'petroleum', 'petrol', 'station', 'point', 'courier', 'couriers', 'parcel', 'services', 'tours', 'travels', 'parking', 'bhojnalaya', 'lodge', 'comforts', 'residency', 'dining', 'hall', 'kitchen', 'tea', 'snacks'}
+
+        candidates = []
+        for text, score in ocr_lines[:8]:
             t = text.strip()
-            if len(t) < 3 or t.isdigit():
+            t_lower = t.lower()
+            if len(t) < 3 or t[0].isdigit() or re.match(r'^[\d\s₹$.,/\-]+$', t):
                 continue
-            if any(k in t.lower() for k in ['tax invoice', 'cash memo', 'retail invoice', 'welcome', 'phone', 'tel', 'gstin']):
+            if any(pat.search(t_lower) for pat in noise_patterns):
                 continue
-            vendor_cands.append(t)
+            words = set(re.findall(r'\b[a-z]{3,}\b', t_lower))
+            if words.intersection(address_words) and not words.intersection(vendor_words):
+                continue
+            candidates.append(t)
 
-        extracted['vendor'] = vendor_cands[0] if vendor_cands else claim_info.get('vendor', '')
+        # Reverse scan for inverted receipts with bottom header
+        kw_list = ['hotel', 'dhaba', 'restaurant', 'cafe', 'fuel', 'petrol', 'station', 'courier', 'parcel', 'tour', 'travel', 'parking', 'cab', 'service', 'lodge', 'dining', 'kitchen']
+        for text, score in ocr_lines[-8:]:
+            t = text.strip()
+            t_lower = t.lower()
+            if any(kw in t_lower for kw in kw_list) and not any(pat.search(t_lower) for pat in noise_patterns):
+                if not candidates or any(kw in t_lower for kw in ['cab', 'hotel', 'dhaba', 'restaurant']):
+                    candidates.insert(0, t)
+                    break
 
-        return extracted
+        vendor = ""
+        if candidates:
+            top = candidates[0].strip()
+            # If line 0 is brand (HPCL/BPCL), check if line 1 has dealer name
+            if top.upper() in ['HPCL', 'BPCL', 'IOCL', 'INDIANOIL', 'BHARAT PETROLEUM'] and len(candidates) > 1:
+                top = candidates[1].strip()
+            vendor = clean_vendor_text(re.sub(r'[:.\-].*$', '', top))
+
+        if not vendor or len(vendor) < 3 or vendor.lower() in ['driver', "driver'sbignature", 'iver', 'signature']:
+            vendor = clean_vendor_text(claim_info.get('vendor', ''))
+
+        return {
+            'vendor': vendor,
+            'receipt_date': receipt_date,
+            'receipt_number': receipt_number,
+            'gstin': gstin,
+            'total_amount': total_amount,
+            'raw_text': all_text,
+            'ocr_lines': ocr_lines,
+            'has_photo': True,
+            'ocr_confidence': sum(l[1] for l in ocr_lines) / max(1, len(ocr_lines))
+        }

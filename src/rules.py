@@ -86,7 +86,7 @@ def evaluate_expense_policy(
     if not has_photo or not raw_text.strip():
         policy_rules.append({
             'name': 'Receipt Attachment',
-            'passed': false,
+            'passed': False,
             'detail': 'Bill not attached or photograph unreadable'
         })
         return "review", "bill not attached or photo unreadable", policy_rules
@@ -100,7 +100,7 @@ def evaluate_expense_policy(
     # 2. Duplicate Submission Detection Rule
     receipt_no = extracted_fields.get('receipt_number', '')
     vendor_clean = re.sub(r'[^a-zA-Z0-9]', '', str(extracted_fields.get('vendor', ''))).lower()
-    dedup_key = f"{vendor_clean}_{receipt_no}_{bill_amt}" if receipt_no else None
+    dedup_key = f"{vendor_clean}_{receipt_no}_{bill_amt}" if receipt_no and len(str(receipt_no).strip()) >= 3 else None
 
     if dedup_key and dedup_key in seen_receipts:
         policy_rules.append({

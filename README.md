@@ -120,14 +120,14 @@ Open **[http://localhost:8501](http://localhost:8501)**.
 
 For the 190 test claims in `claims_test.csv`:
 - **Total Claims Processed**: 190
-- **Auto-Approved (`approve`)**: 142 claims (74.7%)
-- **Clerk Review (`review`)**: 48 claims (25.3%)
+- **Auto-Approved (`approve`)**: 152 claims (80.0%)
+- **Clerk Review (`review`)**: 38 claims (20.0%)
   - *Breakdown of Review Flags*:
-    - High-value claims (≥ ₹2,000 threshold): ~16 claims
-    - Missing / unreadable bill photos (failed uploads): 14 claims
-    - Fuel vehicle number mismatches: ~11 claims
-    - Lodging missing GST invoice / over-limit: ~5 claims
-    - Amount discrepancies (> ₹10 mismatch): ~2 claims
+    - Missing / unreadable bill photos (failed uploads): 15 claims
+    - High-value claims (≥ ₹2,000 threshold): 12 claims
+    - Lodging policy exceptions (missing GSTIN / grade limit): 5 claims
+    - Fuel vehicle number mismatches: 3 claims
+    - Amount discrepancies (> ₹10 mismatch): 3 claims
 
 ---
 
@@ -135,14 +135,11 @@ For the 190 test claims in `claims_test.csv`:
 
 ### Regenerate `predictions.csv`:
 ```bash
-python generate_predictions.py
+python -m src.pipeline
 ```
 
 ### Run Evaluation Suite:
-```bash
-python evaluate.py
-```
-*(Or open [`notebooks/evaluation.ipynb`](./notebooks/evaluation.ipynb) in Jupyter / VS Code)*
+Open and execute [`notebooks/evaluation.ipynb`](./notebooks/evaluation.ipynb) in Jupyter / VS Code or inspect the benchmark logs.
 
 ---
 
