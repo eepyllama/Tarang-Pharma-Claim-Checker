@@ -7,3 +7,6 @@ __pycache__/
 env/
 venv/
 *.log
+data/images/temp_*
+data/images/upload_*
+

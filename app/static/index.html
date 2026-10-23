@@ -24,7 +24,7 @@
       </div>
       <div>
         <h1 class="brand-title">Tarang Pharma Distribution</h1>
-        <p class="brand-sub">Field Expense Policy v3.2 • Automated Audit Engine</p>
+        <p class="brand-sub">Field Expense Policy v3.2 • Automated Receipt Reading & Audit Engine</p>
       </div>
     </div>
     
@@ -35,8 +35,12 @@
         <span class="stat-val" id="engineStatus">RapidOCR (Offline • ₹0/claim)</span>
       </div>
       <div class="stat-pill">
+        <span class="stat-label">Available Claims:</span>
+        <span class="stat-val highlight" id="claimsCountStat">473 Claims</span>
+      </div>
+      <div class="stat-pill">
         <span class="stat-label">Auto-Approval Rate:</span>
-        <span class="stat-val highlight" id="approvalRateStat">89.5%</span>
+        <span class="stat-val highlight" id="approvalRateStat">80.0%</span>
       </div>
     </div>
   </header>
@@ -45,107 +49,205 @@
   <main class="container">
     <div class="grid-layout">
       
-      <!-- Left Column: Input & Claim Details -->
-      <section class="card input-card">
-        <div class="card-header">
-          <div class="header-icon">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-              <polyline points="17 8 12 3 7 8"></polyline>
-              <line x1="12" y1="3" x2="12" y2="15"></line>
-            </svg>
-          </div>
-          <div>
-            <h2>Claim & Receipt Input</h2>
-            <p>Select a pre-loaded claim or upload a new photo</p>
-          </div>
-        </div>
-
-        <!-- 1-Click Sample Claim Selector -->
-        <div class="form-group">
-          <label for="sampleSelector">⚡ Quick Test: Load Real Field Claim</label>
-          <div class="select-wrapper">
-            <select id="sampleSelector" class="form-control">
-              <option value="">-- Choose a sample claim to test live --</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Dropzone / Image Uploader -->
-        <div class="dropzone" id="dropzone">
-          <input type="file" id="fileInput" accept="image/*" class="file-input">
-          <div class="dropzone-content" id="dropzonePrompt">
-            <svg class="upload-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
-            <p class="dropzone-title">Drag & drop receipt photo or <span class="browse-link">browse</span></p>
-            <p class="dropzone-sub">Supports JPEG, PNG phone uploads</p>
-          </div>
-          <div class="dropzone-preview hidden" id="dropzonePreview">
-            <img id="previewImg" src="" alt="Receipt Preview">
-            <button type="button" class="btn-remove-img" id="removeImgBtn" title="Remove photo">×</button>
-          </div>
-        </div>
-
-        <!-- Claim Metadata Form -->
-        <form id="claimForm" class="claim-form">
-          <div class="form-row">
-            <div class="form-group col-half">
-              <label for="claimId">Claim ID</label>
-              <input type="text" id="claimId" class="form-control" value="CLM-31086" required>
+      <!-- Left Column: Two Distinct Separated Input Sections -->
+      <div class="input-column">
+        
+        <!-- SECTION 1: Pre-Loaded Field Claims Explorer (All 473 Claims) -->
+        <section class="card explorer-card">
+          <div class="card-header">
+            <div class="header-icon icon-primary">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
             </div>
-            <div class="form-group col-half">
-              <label for="empId">Representative (Employee ID)</label>
-              <select id="empId" class="form-control" required>
-                <option value="TPD-0412">TPD-0412 (Rohan Wankhede - M1)</option>
+            <div>
+              <div class="section-tag tag-blue">SECTION 1 • PRE-LOADED FIELD DATA</div>
+              <h2>Field Claims Explorer (473 Claims)</h2>
+              <p>Test any real claim from the 190 test batch or 283 historical claims</p>
+            </div>
+          </div>
+
+          <!-- Dataset & Category Filter Bar -->
+          <div class="filter-bar">
+            <div class="filter-group">
+              <label for="datasetFilter">Dataset Batch:</label>
+              <select id="datasetFilter" class="filter-select">
+                <option value="all">All Batches (473 Claims)</option>
+                <option value="test" selected>Test Batch (190 claims)</option>
+                <option value="train">Historical Train (283 claims)</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="categoryFilter">Category:</label>
+              <select id="categoryFilter" class="filter-select">
+                <option value="all">All Categories</option>
+                <option value="Fuel">Fuel (Two-Wheeler / Car)</option>
+                <option value="Food">Food (Meals with Doctors)</option>
+                <option value="Lodging">Lodging (Hotel Invoices)</option>
+                <option value="Local travel">Local Travel (Cab / Auto)</option>
+                <option value="Courier">Courier (Sample Dispatch)</option>
+                <option value="Parking">Parking (Clinic Slips)</option>
               </select>
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="form-group col-half">
-              <label for="category">Category</label>
-              <select id="category" class="form-control" required>
-                <option value="Fuel">Fuel (Vehicle match required)</option>
-                <option value="Food">Food (Meals with doctors)</option>
-                <option value="Lodging">Lodging (Hotel GST tax invoice)</option>
-                <option value="Local travel">Local travel (Cab/Auto)</option>
-                <option value="Courier">Courier (Sample dispatch)</option>
-                <option value="Parking">Parking (Daily clinic parking)</option>
-              </select>
-            </div>
-            <div class="form-group col-half">
-              <label for="amountClaimed">Claimed Amount (₹)</label>
-              <input type="text" id="amountClaimed" class="form-control" value="300.00" required>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group col-half">
-              <label for="expenseDate">Expense Date</label>
-              <input type="text" id="expenseDate" class="form-control" value="2026-06-11" required>
-            </div>
-            <div class="form-group col-half">
-              <label for="vendor">Vendor (As Typed by Rep)</label>
-              <input type="text" id="vendor" class="form-control" value="Laxmi Auto Fuels">
-            </div>
-          </div>
-
+          <!-- The Main Claims Dropdown -->
           <div class="form-group">
-            <label for="repComment">Rep Comment</label>
-            <input type="text" id="repComment" class="form-control" value="Petrol two wheeler field visit">
+            <div class="dropdown-header-row">
+              <label for="fieldClaimSelect">Select Claim to Test:</label>
+              <span class="results-count" id="filteredCount">Showing 190 claims</span>
+            </div>
+            <div class="select-wrapper">
+              <select id="fieldClaimSelect" class="form-control select-claims-list">
+                <option value="">-- Loading 473 claims... --</option>
+              </select>
+            </div>
           </div>
 
-          <button type="submit" class="btn btn-primary" id="analyzeBtn">
+          <!-- Selected Claim Summary Preview Box -->
+          <div class="claim-summary-box" id="claimSummaryBox">
+            <div class="summary-meta-grid">
+              <div>
+                <span class="meta-label">Claim ID:</span>
+                <span class="meta-val highlight-id" id="sumClaimId">CLM-31086</span>
+              </div>
+              <div>
+                <span class="meta-label">Representative:</span>
+                <span class="meta-val" id="sumEmpName">Rohan Wankhede (TPD-0412 • M1)</span>
+              </div>
+              <div>
+                <span class="meta-label">Category:</span>
+                <span class="meta-val" id="sumCategory">Fuel</span>
+              </div>
+              <div>
+                <span class="meta-label">Claimed Amount:</span>
+                <span class="meta-val text-green" id="sumAmount">₹300.00</span>
+              </div>
+              <div>
+                <span class="meta-label">Claimed Vendor:</span>
+                <span class="meta-val" id="sumVendor">New Highway Service Station</span>
+              </div>
+              <div>
+                <span class="meta-label">Expense Date:</span>
+                <span class="meta-val" id="sumDate">2026-07-18</span>
+              </div>
+            </div>
+            <div class="summary-comment-row">
+              <span class="meta-label">Rep Comment:</span>
+              <span class="meta-val comment-italic" id="sumComment">"Petrol two wheeler field visit"</span>
+            </div>
+            <div class="summary-file-row">
+              <span class="meta-label">Attached Photo:</span>
+              <span class="meta-val file-tag" id="sumImageFile">IMG-20260719-WA0062.jpg</span>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-primary" id="auditFieldClaimBtn">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <polygon points="5 3 19 12 5 21 5 3"></polygon>
             </svg>
-            <span>Run Receipt Audit & Extraction</span>
+            <span>Run Audit on Selected Field Claim</span>
           </button>
-        </form>
-      </section>
+        </section>
+
+        <!-- SECTION 2: Completely Separate Section for Uploading New Receipts -->
+        <section class="card upload-card">
+          <div class="card-header">
+            <div class="header-icon icon-upload">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+            <div>
+              <div class="section-tag tag-purple">SECTION 2 • NEW PHOTO UPLOAD</div>
+              <h2>Upload Receipt Photo & Manual Audit</h2>
+              <p>Drag & drop any receipt image from your computer to extract and test</p>
+            </div>
+          </div>
+
+          <!-- Dedicated Dropzone / File Picker -->
+          <div class="dropzone" id="dropzone">
+            <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" class="file-input">
+            <div class="dropzone-content" id="dropzonePrompt">
+              <svg class="upload-icon" width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                <polyline points="21 15 16 10 5 21"></polyline>
+              </svg>
+              <p class="dropzone-title">Drag & drop receipt photo here, or <span class="browse-link">browse files</span></p>
+              <p class="dropzone-sub">Supports JPEG, JPG, PNG photos taken by phone</p>
+            </div>
+            <div class="dropzone-preview hidden" id="dropzonePreview">
+              <img id="previewImg" src="" alt="Receipt Preview">
+              <button type="button" class="btn-remove-img" id="removeImgBtn" title="Remove photo">×</button>
+            </div>
+          </div>
+
+          <!-- Separate Manual Claim Metadata Form -->
+          <form id="uploadClaimForm" class="claim-form">
+            <div class="form-row">
+              <div class="form-group col-half">
+                <label for="customClaimId">Claim ID</label>
+                <input type="text" id="customClaimId" class="form-control" value="CLM-CUSTOM-01" required>
+              </div>
+              <div class="form-group col-half">
+                <label for="customEmpId">Representative (Employee ID)</label>
+                <select id="customEmpId" class="form-control" required>
+                  <option value="TPD-0412">TPD-0412 (Rohan Wankhede - M1)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-half">
+                <label for="customCategory">Category</label>
+                <select id="customCategory" class="form-control" required>
+                  <option value="Fuel">Fuel (Two-Wheeler / Car)</option>
+                  <option value="Food">Food (Meals with Doctors)</option>
+                  <option value="Lodging">Lodging (Hotel Invoices)</option>
+                  <option value="Local travel">Local Travel (Cab / Auto)</option>
+                  <option value="Courier">Courier (Sample Dispatch)</option>
+                  <option value="Parking">Parking (Clinic Slips)</option>
+                </select>
+              </div>
+              <div class="form-group col-half">
+                <label for="customAmount">Claimed Amount (₹)</label>
+                <input type="text" id="customAmount" class="form-control" placeholder="e.g. 450.00" value="450.00" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-half">
+                <label for="customDate">Expense Date</label>
+                <input type="text" id="customDate" class="form-control" placeholder="YYYY-MM-DD" value="2026-07-20" required>
+              </div>
+              <div class="form-group col-half">
+                <label for="customVendor">Vendor (As Typed by Rep)</label>
+                <input type="text" id="customVendor" class="form-control" placeholder="e.g. Green Leaf Restaurant" value="Green Leaf Restaurant">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="customComment">Rep Comment</label>
+              <input type="text" id="customComment" class="form-control" placeholder="Optional comments" value="Lunch with doctor">
+            </div>
+
+            <button type="submit" class="btn btn-secondary" id="auditUploadedPhotoBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+              <span>Extract Details & Audit Uploaded Photo</span>
+            </button>
+          </form>
+        </section>
+
+      </div>
 
       <!-- Right Column: Audit Results & Policy Breakdown -->
       <section class="card results-card">
@@ -157,8 +259,9 @@
             </svg>
           </div>
           <div>
-            <h2>Audit Verdict & Extraction</h2>
-            <p>Policy checks, verified fields & OCR compliance</p>
+            <div class="section-tag tag-green">AUDIT VERDICT & EXCEPTION REPORT</div>
+            <h2>Policy Audit & Extraction Results</h2>
+            <p id="auditSourceInfo">Results from automated receipt analysis</p>
           </div>
         </div>
 
@@ -166,64 +269,62 @@
         <div class="empty-state" id="emptyState">
           <div class="empty-icon">
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-              <path d="M9 17v1a3 3 0 0 0 6 0v-1"></path>
-              <path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7z"></path>
+              <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+              <line x1="9" y1="7" x2="15" y2="7"></line>
+              <line x1="9" y1="11" x2="15" y2="11"></line>
+              <line x1="9" y1="15" x2="13" y2="15"></line>
             </svg>
           </div>
-          <h3>Ready for Inspection</h3>
-          <p>Select a sample claim on the left or upload a bill photo, then click <strong>Run Receipt Audit</strong> to see live extraction and policy decisions.</p>
+          <h3>Select a Claim or Upload a Photo</h3>
+          <p>Choose any of the 473 pre-loaded field claims on the left, or upload your own receipt to see instant OCR extraction and Policy v3.2 audit breakdown.</p>
         </div>
 
-        <!-- Live Results Container -->
+        <!-- Active Results Container -->
         <div class="results-container hidden" id="resultsContainer">
           
-          <!-- Decision Banner -->
+          <!-- Verdict Banner -->
           <div class="decision-banner" id="decisionBanner">
-            <div class="decision-badge" id="decisionBadge">
-              <span class="decision-icon" id="decisionIcon">✓</span>
-              <span class="decision-text" id="decisionText">APPROVE</span>
+            <div class="banner-top">
+              <span class="decision-badge" id="decisionBadge">APPROVE</span>
+              <span class="confidence-badge" id="confidenceBadge">OCR Confidence: 94.2%</span>
             </div>
-            <div class="decision-summary">
-              <h4 id="decisionTitle">Auto-Approved for Weekly Payment Run</h4>
-              <p id="decisionReason">Valid bill under ₹2,000 adhering to Tarang Expense Policy v3.2.</p>
-            </div>
+            <h3 class="decision-title" id="decisionTitle">AUTO-APPROVED (Under ₹2,000)</h3>
+            <p class="decision-reason" id="decisionReason">All policy checks passed. Eligible for weekly automated reimbursement without clerk touch.</p>
           </div>
 
-          <!-- Policy Compliance Checklist -->
+          <!-- Side-by-Side Field Comparison Table -->
           <div class="section-block">
-            <h3 class="section-title">
-              <span>Policy Compliance Rules Evaluated</span>
-              <span class="badge" id="confidenceBadge">Confidence: 94%</span>
-            </h3>
-            <div class="rules-list" id="rulesList">
-              <!-- Dynamically populated -->
-            </div>
-          </div>
-
-          <!-- Extracted Fields Table -->
-          <div class="section-block">
-            <h3 class="section-title">Accounting Fields Extracted from Receipt</h3>
-            <div class="table-responsive">
-              <table class="fields-table">
+            <h4 class="block-title">5 Key Accounting Fields Comparison</h4>
+            <div class="table-wrapper">
+              <table class="data-table">
                 <thead>
                   <tr>
-                    <th>Field Name</th>
-                    <th>Extracted from Photo</th>
+                    <th>Accounting Field</th>
+                    <th>Claimed by Rep</th>
+                    <th>Extracted from Receipt</th>
                     <th>Status</th>
                   </tr>
                 </thead>
                 <tbody id="fieldsTableBody">
-                  <!-- Dynamically populated -->
+                  <!-- Populated dynamically -->
                 </tbody>
               </table>
             </div>
           </div>
 
-          <!-- Receipt Image & OCR View -->
+          <!-- Policy Audit Rules Checklist -->
           <div class="section-block">
-            <h3 class="section-title">Original Receipt Image</h3>
-            <div class="receipt-viewer-wrapper">
-              <img id="resultReceiptImg" src="" alt="Receipt Photo" class="receipt-full-img">
+            <h4 class="block-title">Tarang Field Expense Policy v3.2 Rules Checklist</h4>
+            <div class="rules-list" id="rulesList">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Receipt Photo Viewer -->
+          <div class="section-block">
+            <h4 class="block-title">Processed Receipt Photo</h4>
+            <div class="receipt-viewer-wrapper" id="receiptViewerWrapper">
+              <img id="resultReceiptImg" src="" alt="Receipt Image" class="receipt-full-img">
             </div>
           </div>
 
@@ -233,8 +334,9 @@
     </div>
   </main>
 
+  <!-- Footer -->
   <footer class="footer">
-    <p>Tarang Pharma Distribution • Nagpur Division • Expense Audit System v1.0 • Built with RapidOCR + FastAPI</p>
+    <p>Tarang Pharma Distribution • Expense Automation System • Built to Nilesh Agrawal's Policy v3.2 Brief • Local RapidOCR Engine (₹0/claim)</p>
   </footer>
 
   <script src="/static/app.js"></script>

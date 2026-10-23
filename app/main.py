@@ -61,26 +61,69 @@ async def get_employees():
     return employees_data
 
 
+def load_all_claims():
+    """Loads all 473 claims from test and train sets for testing."""
+    claims = []
+    # 1. Test claims (190)
+    test_csv = settings.resolve_raw_file("claims_test.csv")
+    if test_csv.exists():
+        try:
+            df_test = pd.read_csv(test_csv)
+            for _, row in df_test.iterrows():
+                eid = str(row.get('emp_id', '')).strip()
+                ename = employees_data.get(eid, {}).get('name', eid)
+                img = str(row.get('image_file', '')) if pd.notna(row.get('image_file')) else ""
+                claims.append({
+                    'claim_id': str(row['claim_id']).strip(),
+                    'emp_id': eid,
+                    'employee_name': ename,
+                    'category': str(row.get('category', '')).strip(),
+                    'vendor': str(row.get('vendor', '')).strip(),
+                    'amount_claimed': str(row.get('amount_claimed', '')).strip(),
+                    'expense_date': str(row.get('expense_date', '')).strip(),
+                    'image_file': img,
+                    'rep_comment': str(row.get('rep_comment', '')).strip() if pd.notna(row.get('rep_comment')) else "",
+                    'dataset': 'Test Batch (190 claims)',
+                    'has_image': bool(settings.resolve_image_path(img)) if img else False
+                })
+        except Exception as e:
+            print(f"Error loading test claims: {e}")
+
+    # 2. Historical train claims (283)
+    train_csv = settings.resolve_raw_file("claims_train.csv")
+    if train_csv.exists():
+        try:
+            df_train = pd.read_csv(train_csv)
+            for _, row in df_train.iterrows():
+                eid = str(row.get('emp_id', '')).strip()
+                ename = employees_data.get(eid, {}).get('name', eid)
+                img = str(row.get('image_file', '')) if pd.notna(row.get('image_file')) else ""
+                claims.append({
+                    'claim_id': str(row['claim_id']).strip(),
+                    'emp_id': eid,
+                    'employee_name': ename,
+                    'category': str(row.get('category', '')).strip(),
+                    'vendor': str(row.get('vendor', '')).strip(),
+                    'amount_claimed': str(row.get('amount_claimed', '')).strip(),
+                    'expense_date': str(row.get('expense_date', '')).strip(),
+                    'image_file': img,
+                    'rep_comment': str(row.get('rep_comment', '')).strip() if pd.notna(row.get('rep_comment')) else "",
+                    'dataset': 'Historical Train (283 claims)',
+                    'has_image': bool(settings.resolve_image_path(img)) if img else False
+                })
+        except Exception as e:
+            print(f"Error loading train claims: {e}")
+
+    return claims
+
+
+ALL_CLAIMS_CACHE = load_all_claims()
+
+
 @app.get("/api/sample-claims")
 async def get_sample_claims():
-    """Returns curated sample claims for 1-click testing."""
-    test_csv = settings.resolve_raw_file("claims_test.csv")
-    samples = []
-    if test_csv.exists():
-        df_test = pd.read_csv(test_csv)
-        for _, row in df_test.head(15).iterrows():
-            samples.append({
-                'claim_id': row['claim_id'],
-                'emp_id': row['emp_id'],
-                'category': row['category'],
-                'vendor': row['vendor'],
-                'amount_claimed': str(row['amount_claimed']),
-                'expense_date': str(row['expense_date']),
-                'image_file': str(row['image_file']),
-                'rep_comment': str(row.get('rep_comment', '')),
-                'source': 'claims_test.csv'
-            })
-    return samples
+    """Returns all 473 field claims for 1-click testing."""
+    return ALL_CLAIMS_CACHE
 
 
 @app.post("/api/check-claim")
@@ -197,6 +240,6 @@ async def get_stats():
 if __name__ == "__main__":
     import uvicorn
     print("\n" + "=" * 65)
-    print("🚀 Starting Tarang Receipt Reader & Audit Service on http://localhost:8000")
+    print("[INFO] Starting Tarang Receipt Reader & Audit Service on http://localhost:8000")
     print("=" * 65)
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=False)
