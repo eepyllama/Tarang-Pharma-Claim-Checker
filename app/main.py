@@ -275,8 +275,12 @@ async def get_stats():
 
 
 if __name__ == "__main__":
+    from src.memo_printer import print_executive_memo
+    print_executive_memo()
+
     import uvicorn
-    print("\n" + "=" * 65)
-    print("[INFO] Starting Tarang Receipt Reader & Audit Service on http://localhost:8000")
-    print("=" * 65)
+    print("\n" + "=" * 80)
+    print("  [INFO] Launching Tarang Receipt Reader & Audit Engine on http://localhost:8000")
+    print("  [INFO] Press Ctrl+C to stop the server.")
+    print("=" * 80 + "\n")
     uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=False)

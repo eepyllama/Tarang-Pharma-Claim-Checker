@@ -131,7 +131,7 @@ with left_col:
     # Two distinct sections on the same page using tabs
     tab_field, tab_upload = st.tabs([
         "⚡ Section 1: Pre-Loaded Field Claims (473)",
-        "📤 Section 2: Upload Receipt Photo & Audit"
+        "📤 Section 2: Clerk Ad-Hoc Receipt Audit"
     ])
 
     # ---------------------------------------------------------
@@ -193,10 +193,10 @@ with left_col:
             st.warning("No claims match the selected filter criteria.")
 
     # ---------------------------------------------------------
-    # SECTION 2: DEDICATED PHOTO UPLOAD & MANUAL AUDIT
+    # SECTION 2: CLERK AD-HOC RECEIPT AUDIT
     # ---------------------------------------------------------
     with tab_upload:
-        st.markdown("**Upload any receipt photo from phone or computer to extract and audit:**")
+        st.markdown("**Clerk Audit Desk:** Upload any receipt photo (e.g. forwarded from rep email, WhatsApp query, or physical scan) to extract fields and audit policy compliance:")
 
         uploaded_file = st.file_uploader(
             "Upload Receipt Photo (JPEG, JPG, PNG)",

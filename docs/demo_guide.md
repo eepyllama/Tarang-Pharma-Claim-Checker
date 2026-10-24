@@ -6,7 +6,7 @@ Use this script to record your 3-minute demonstration video (using Loom, OBS, or
 ---
 
 ### Timing & Sequence Overview (Total: 3 minutes)
-
+22222222222222222222222
 | Timestamp | Phase | What to Show on Screen | What to Say (Voiceover) |
 | :--- | :--- | :--- | :--- |
 | **0:00 – 0:35** | **The Problem & Setup** | Terminal showing `python app.py` launching, browser opening to `http://localhost:8000` | *"Hi, I'm presenting our automated Receipt Reading & Audit Engine for Tarang Pharma Distribution. Today, two finance clerks spend 140 hours every month manually typing ~2,400 receipt photos into ERP. Nilesh Agrawal asked for a tool that reads bills at >95% accuracy, auto-approves compliant claims under ₹2,000, and cuts clerical workload. Here is the working service."* |
